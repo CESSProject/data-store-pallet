@@ -1,3 +1,24 @@
+//! # Data Store Module
+//!
+//! Contain operations related info of files on multi-direction.
+//!
+//! ### Terminology
+//!
+//! * **fileid:** Public or private.
+//! * **filesize:** Number of duplicate.
+//! * **keywords:** Expiration time.
+//! 
+//! 
+//! ### Interface
+//!
+//! ### Dispatchable Functions
+//!
+//! * `store` - Upload info of stored file.
+//! * `retrieve` - Is the query the owner of the data.
+//! * `replace` - Replace the entire data, including fileid.
+//! * `delete` - Method of deleting data.
+//! * `edit` - Change data element information.
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 /// Edit this file to define custom logic or remove it if it is not needed.
@@ -60,17 +81,17 @@ pub mod pallet {
 		/// Event documentation should end with an array that provides descriptive names for event
 		/// parameters. [something, who]
 		SomethingStored(u32, T::AccountId),
-
+		//Store data events
 		Store{acc: T::AccountId, fileid: Vec<u8>},
-
+		//Event that is not the owner of the data
 		NotOwner{acc: T::AccountId, fileid: Vec<u8>},
-
+		//Is the owner event of the data
 		IsOwner{acc: T::AccountId, fileid: Vec<u8>},
-
+		//Event when data is replaced
 		Replace{acc: T::AccountId, old_fileid: Vec<u8>, new_fileid: Vec<u8>},
-
+		//Event when data is deleted
 		Delete{acc: T::AccountId, fileid: Vec<u8>},
-
+		//Event for modifying data information
 		Edit{acc: T::AccountId, fileid: Vec<u8>, new_filename: Vec<u8>, new_keywords: Vec<Vec<u8>>},
 	}
 
@@ -88,8 +109,17 @@ pub mod pallet {
 	// Dispatchable functions allows users to interact with the pallet and invoke state changes.
 	// These functions materialize as "extrinsics", which are often compared to transactions.
 	// Dispatchable functions must be annotated with a weight and must return a DispatchResult.
+
+	
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
+		/// Upload info of stored file.
+		/// 
+		/// Parameters:
+			/// - `pfileid`: Unique identification of data.
+			/// - `pfilename`: Name of data.
+			/// - `filesize`: data size.
+			/// - `pkeywords`: Keywords of data
 		#[pallet::weight(1_000_000)]
 		pub fn store(origin: OriginFor<T>, pfileid:Vec<u8>, pfilename: Vec<u8>, filesize: u128, pkeywords: Vec<Vec<u8>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
@@ -100,6 +130,9 @@ pub mod pallet {
 		}
 
 		//Determine whether it is the file owner
+		/// 
+		/// Parameters:
+			/// - `pfileid`: Unique identification of data.
 		#[pallet::weight(1_000_000)]
 		pub fn retrieve(origin: OriginFor<T>, pfileid: Vec<u8>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
@@ -114,6 +147,13 @@ pub mod pallet {
 			Ok(())
 		}
 
+		//Replace the entire data, including fileid
+		/// Parameters:
+			/// - `old_fileid`: Old fileid.
+			/// - `new_fileid`: New fileid.
+			/// - `pfilename`: Name of data.
+			/// - `filesize`: data size.
+			/// - `keywords`: Keywords of data
 		#[pallet::weight(1_000_000)]
 		pub fn replace(origin: OriginFor<T>, old_fileid: Vec<u8>, new_fileid: Vec<u8>, pfilename: Vec<u8>, filesize: u128, pkeywords: Vec<Vec<u8>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
@@ -128,6 +168,9 @@ pub mod pallet {
 			Ok(())
 		}
 
+		//Method of deleting data.
+		/// Parameters:
+			/// - `pfileid`: Unique identification of data..
 		#[pallet::weight(1_000_000)]
 		pub fn delete(origin: OriginFor<T>, pfileid: Vec<u8>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
@@ -142,6 +185,11 @@ pub mod pallet {
 			Ok(())
 		}
 
+		//Change data element information
+		/// Parameters:
+			/// - `pfileid`: Unique identification of data.
+			/// - `new_filename`: Name of data.
+			/// - `new_keywords`: Keywords of data
 		#[pallet::weight(1_000_000)]
 		pub fn edit(origin: OriginFor<T>, pfileid: Vec<u8>, new_filename: Vec<u8>, new_keywords: Vec<Vec<u8>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
