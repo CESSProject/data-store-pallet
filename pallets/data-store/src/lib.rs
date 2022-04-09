@@ -158,6 +158,8 @@ pub mod pallet {
 				Err(Error::<T>::FileNonExist)?;
 			}
 
+			<FileStorage<T>>::remove(&who, &fileid);
+
 			Self::insert_file(&who, new_fileid.clone(), pfilename, filesize, pkeywords)?;
 			Self::deposit_event(Event::<T>::Replace{acc: who, old_fileid: old_fileid, new_fileid: new_fileid});
 			Ok(())
@@ -175,6 +177,8 @@ pub mod pallet {
 			if !<FileStorage<T>>::contains_key(&who, &fileid) {
 				Err(Error::<T>::FileNonExist)?;
 			}
+
+			<FileStorage<T>>::remove(&who, &fileid);
 
 			Self::deposit_event(Event::<T>::Delete{acc: who, fileid: pfileid});
 			Ok(())
