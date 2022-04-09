@@ -76,8 +76,6 @@ fn edit_work() {
 		let pkeywords: Vec<Vec<u8>> = vec![vec![0,1,2,3,4,5,6,7,8,9]];
 		assert_ok!(DataStore::store(Origin::signed(1), pfileid.clone(), pfilename, 200, pkeywords));
 
-		assert_ok!(DataStore::delete(Origin::signed(1), pfileid.clone()));
-
 		let new_filename: Vec<u8> = vec![0,1,2,3,4,5,6,7,8];
 		let new_keywords: Vec<Vec<u8>> = vec![vec![0,1,2,3,4,5,6,7,8,9]];
 		assert_ok!(DataStore::edit(Origin::signed(1), pfileid.clone(), new_filename.clone(), new_keywords.clone()));
