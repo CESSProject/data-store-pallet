@@ -158,7 +158,7 @@ pub mod pallet {
 				Err(Error::<T>::FileNonExist)?;
 			}
 
-			<FileStorage<T>>::remove(&who, &fileid);
+			<FileStorage<T>>::remove(&who, &o_fileid);
 
 			Self::insert_file(&who, new_fileid.clone(), pfilename, filesize, pkeywords)?;
 			Self::deposit_event(Event::<T>::Replace{acc: who, old_fileid: old_fileid, new_fileid: new_fileid});
