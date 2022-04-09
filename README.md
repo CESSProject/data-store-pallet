@@ -28,64 +28,18 @@ cargo build --release
 
 After the node has finished compiling, you can follow these steps below to run it. 
 
-### Generate Keys
+### Run Example
 
-If you already have keys for Substrate using the [SS58 address encoding format](https://docs.substrate.io/v3/advanced/ss58/), please see the next section.
-
-Begin by compiling and installing the utility ([instructions and more info here](https://substrate.dev/docs/en/knowledgebase/integrate/subkey)). 
-
-Generate a mnemonic (Secret phrase) and see the `sr25519` key and address associated with it.
-
-```
-# subkey command
-subkey generate --scheme sr25519
-```
-
-Now see the `ed25519` key and address associated with the same mnemonic (secret phrase).
-
-```
-# subkey command
-subkey inspect --scheme ed25519 "SECRET PHRASE YOU JUST GENERATED"
-```
-
-We recommend that you record the above outputs and keep mnemonic in safe.
-
-### Run Testnet
-
-Launch node on the cess-testnet with:
+Launch node on the dev-env with:
 
 ```
 # start
-./target/release/cess-node --base-path /tmp/cess --chain cess-testnet
-```
-
-Then you can add an account with:
-
-```
-# create key file
-vim secretKey.txt
-
-# add secret phrase for the node in the file
-YOUR ACCOUNT'S SECRET PHRASE
-```
-
-```
-# add key to node
-./target/release/cess-node key insert --base-path /tmp/cess --chain cess-testnet --scheme Sr25519  --key-type babe --suri /root/secretKey.txt
-
-./target/release/cess-node key insert --base-path /tmp/cess --chain cess-testnet --scheme Ed25519  --key-type gran --suri /root/secretKey.txt
-```
-
-Now you can launch node again:
-
-```
-# start
-./target/release/cess-node --base-path /tmp/cess --chain cess-testnet
+./target/release/node-template --dev
 ```
 
 ### Run in Docker
 
-Install [Docker](https://docs.docker.com/get-docker/) first, and run the following command to start a node on the cess-testnet:
+Install [Docker](https://docs.docker.com/get-docker/) first, and run the following command to start a node:
 
 ```
 docker pull cesslab/data-store-pallet:0.1.0
@@ -108,19 +62,11 @@ cargo test --release
 CESS has Rust unit tests with benckmarks also. Currently, testing this feature in docker is not supported. Please execute belows after clone this repo.
 
 ```
-# Run unit tests with benchmarks
-cargo test -p pallet-sminer --features runtime-benchmarks
-cargo test -p pallet-segment-book --features runtime-benchmarks
-cargo test -p pallet-file-bank --features runtime-benchmarks
+# Build project with the benchmarks enabled
+cargo build --release --features runtime-benchmarks
 ```
 
 ## Module Documentation
 
 
-* [Files Bank](https://github.com/CESSProject/cess/tree/main/c-pallets/file-bank)
-* [Segment Book](https://github.com/CESSProject/cess/tree/main/c-pallets/segment-book)
-* [Sminer](https://github.com/CESSProject/cess/tree/main/c-pallets/sminer)
-
-## Contribute
-
-Please follow the contributions guidelines as outlined in [`docs/CONTRIBUTING.adoc`](https://github.com/CESSProject/cess/tree/main/docs/CONTRIBUTING.adoc). In all communications and contributions, this project follows the [Contributor Covenant Code of Conduct](https://github.com/paritytech/substrate/blob/master/docs/CODE_OF_CONDUCT.md).
+* [Data Store](https://github.com/CESSProject/data-store-pallet/tree/main/pallets/data-store)
