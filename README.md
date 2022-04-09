@@ -42,8 +42,8 @@ Launch node on the dev-env with:
 Install [Docker](https://docs.docker.com/get-docker/) first, and run the following command to start a node:
 
 ```
-docker pull cesslab/data-store-pallet:0.1.0
-docker run -itd --name data-store --network=host cesslab/data-store-pallet:0.1.0 && docker logs -f data-store
+docker pull cesslab/data-store-pallet:0.1.1
+docker run -itd --name data-store --network=host cesslab/data-store-pallet:0.1.1 && docker logs -f data-store
 ```
 
 ## Run Tests
@@ -64,6 +64,8 @@ CESS has Rust unit tests with benckmarks also. Currently, testing this feature i
 ```
 # Build project with the benchmarks enabled
 cargo build --release --features runtime-benchmarks
+
+./target/release/node-template benchmark --chain dev --pallet pallet_data_store --extrinsic "*" --repeat 50 --output=./pallets/data-store/src/weights.rs
 ```
 
 ## Module Documentation
