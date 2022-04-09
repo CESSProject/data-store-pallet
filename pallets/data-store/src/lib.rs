@@ -2,11 +2,6 @@
 //!
 //! Contain operations related info of files on multi-direction.
 //!
-//! ### Terminology
-//!
-//! * **fileid:** Public or private.
-//! * **filesize:** Number of duplicate.
-//! * **keywords:** Expiration time.
 //! 
 //! 
 //! ### Interface
@@ -14,7 +9,7 @@
 //! ### Dispatchable Functions
 //!
 //! * `store` - Upload info of stored file.
-//! * `retrieve` - Is the query the owner of the data.
+//! * `retrieve` - Check if the caller has permission to get the specified file.
 //! * `replace` - Replace the entire data, including fileid.
 //! * `delete` - Method of deleting data.
 //! * `edit` - Change data element information.
