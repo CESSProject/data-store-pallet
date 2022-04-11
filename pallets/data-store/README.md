@@ -6,8 +6,8 @@ Contain operations related info of files on multi-direction.
 
 ### Dispatchable Functions
 
-* `store` - Upload info of stored file.
+* `store` - Upload information of the stored file.
 * `retrieve` - Check if the caller has permission to get the specified file.
 * `replace` - Replace the entire data, including fileid.
 * `delete` - Method of deleting data.
-* `edit` - Change data information.
+* `edit` - modifify data information.
