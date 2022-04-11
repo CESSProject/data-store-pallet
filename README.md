@@ -2,7 +2,7 @@
 
 [![Substrate version](https://img.shields.io/badge/Substrate-3.0.0-blue?logo=Parity%20Substrate)](https://substrate.dev/) [![GitHub license](https://img.shields.io/badge/license-GPL3%2FApache2-blue)](#LICENSE)
 
-**The data-store-pallet is one of the components of the data storage service designed and implemented by CESS LAB based on Substrate. See [CIP-1](https://github.com/CESSProject/CIPs/blob/main/CIP-1.md) for its design scheme, and it has been included in [W3F Grants Program-ces_data_store](https://github.com/w3f/Grants-Program/blob/master/applications/ces_data_store.md).**
+**The data-store-pallet is one of the components of the data storage service designed and implemented by CESS LAB based on Substrate. See [CIP-1](https://github.com/CESSProject/CIPs/blob/main/CIP-1.md) for its design scheme, and it has been included in [W3F Grants Program-cess_data_store](https://github.com/w3f/Grants-Program/blob/master/applications/cess_data_store.md).**
 
 ## Getting Started
 
