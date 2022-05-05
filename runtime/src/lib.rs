@@ -36,8 +36,7 @@ pub use frame_support::{
 pub use pallet_balances::Call as BalancesCall;
 pub use pallet_timestamp::Call as TimestampCall;
 use pallet_transaction_payment::CurrencyAdapter;
-#[cfg(any(feature = "std", test))]
-pub use sp_runtime::BuildStorage;
+
 pub use sp_runtime::{Perbill, Permill};
 
 /// Import the template pallet.
@@ -90,8 +89,8 @@ pub mod opaque {
 //   https://docs.substrate.io/v3/runtime/upgrades#runtime-versioning
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("node-template"),
-	impl_name: create_runtime_str!("node-template"),
+	spec_name: create_runtime_str!("data-store"),
+	impl_name: create_runtime_str!("data-store"),
 	authoring_version: 1,
 	// The version of the runtime specification. A full node will not attempt to use its native
 	//   runtime in substitute for the on-chain Wasm runtime unless all of `spec_name`,
@@ -273,6 +272,7 @@ parameter_types! {
 impl pallet_data_store::Config for Runtime {
 	type Event = Event;
 	type StringLimit = StringLimit;
+	type WeightInfo = pallet_data_store::weights::DataStoreWeight<Runtime>;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.

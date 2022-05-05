@@ -5,7 +5,6 @@ description = "FRAME pallet data_store for defining custom runtime logic."
 authors = ["ytq"]
 edition = "2021"
 license = "Unlicense"
-publish = false
 
 
 [package.metadata.docs.rs]
@@ -25,7 +24,7 @@ sp-std = { default-features = false, version = "4.0.0-dev", git = "https://githu
 sp-core = { default-features = false, version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 sp-io = { default-features = false, version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 sp-runtime = { default-features = false, version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
-
+substrate-test-utils = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 
 [features]
 default = ["std"]

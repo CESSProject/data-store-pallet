@@ -32,12 +32,14 @@ mod tests;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
+pub mod weights;
 
 mod types;
 use types::*;
 
 use frame_support::{dispatch::*, pallet_prelude::*};
 // use sp_std::prelude::*;
+pub use weights::WeightInfo;
 
 #[frame_support::pallet]
 pub mod pallet {
@@ -54,6 +56,8 @@ pub mod pallet {
 
 		#[pallet::constant]
 		type StringLimit: Get<u32>;
+
+		type WeightInfo: WeightInfo;
 	}
 
 	#[pallet::pallet]
@@ -99,6 +103,10 @@ pub mod pallet {
 		FileNonExist,
 		//Error not file owner
 		NotOwner,
+		//BoundedVec to Vec Error
+		BadMetadata,
+		//Upper limit reached
+		UpperLimit,
 	}
 
 	// Dispatchable functions allows users to interact with the pallet and invoke state changes.
@@ -115,7 +123,7 @@ pub mod pallet {
 			/// - `pfilename`: Name of data.
 			/// - `filesize`: data size.
 			/// - `pkeywords`: Keywords of data
-		#[pallet::weight(1_000_000)]
+		#[pallet::weight(T::WeightInfo::store())]
 		pub fn store(origin: OriginFor<T>, pfileid:Vec<u8>, pfilename: Vec<u8>, filesize: u128, pkeywords: Vec<Vec<u8>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 			Self::insert_file(&who, pfileid.clone(), pfilename, filesize, pkeywords)?;
@@ -128,10 +136,10 @@ pub mod pallet {
 		/// 
 		/// Parameters:
 			/// - `pfileid`: Unique identification of data.
-		#[pallet::weight(1_000_000)]
+		#[pallet::weight(T::WeightInfo::retrieve())]
 		pub fn retrieve(origin: OriginFor<T>, pfileid: Vec<u8>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
-			let fileid:BoundedVec<u8, T::StringLimit> = pfileid.clone().try_into().expect("fileid too long");
+			let fileid:BoundedVec<u8, T::StringLimit> = pfileid.clone().try_into().map_err(|_| Error::<T>::BadMetadata)?;
 
 			if <FileStorage<T>>::contains_key(&who, &fileid) {
 				Self::deposit_event(Event::<T>::IsOwner{acc: who, fileid: pfileid});
@@ -149,10 +157,10 @@ pub mod pallet {
 			/// - `pfilename`: Name of data.
 			/// - `filesize`: data size.
 			/// - `keywords`: Keywords of data
-		#[pallet::weight(1_000_000)]
+		#[pallet::weight(T::WeightInfo::replace())]
 		pub fn replace(origin: OriginFor<T>, old_fileid: Vec<u8>, new_fileid: Vec<u8>, pfilename: Vec<u8>, filesize: u128, pkeywords: Vec<Vec<u8>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
-			let o_fileid: BoundedVec<u8, T::StringLimit> = old_fileid.clone().try_into().expect("fileid too long");
+			let o_fileid: BoundedVec<u8, T::StringLimit> = old_fileid.clone().try_into().map_err(|_| Error::<T>::BadMetadata)?;
 			//Determine whether it is the file owner
 			if !<FileStorage<T>>::contains_key(&who, &o_fileid) {
 				Err(Error::<T>::FileNonExist)?;
@@ -168,11 +176,11 @@ pub mod pallet {
 		//Method of deleting data.
 		/// Parameters:
 			/// - `pfileid`: Unique identification of data..
-		#[pallet::weight(1_000_000)]
+		#[pallet::weight(T::WeightInfo::delete())]
 		pub fn delete(origin: OriginFor<T>, pfileid: Vec<u8>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 
-			let fileid: BoundedVec<u8, T::StringLimit> = pfileid.clone().try_into().expect("fileid too long");
+			let fileid: BoundedVec<u8, T::StringLimit> = pfileid.clone().try_into().map_err(|_| Error::<T>::BadMetadata)?;
 			//Determine whether it is the file owner
 			if !<FileStorage<T>>::contains_key(&who, &fileid) {
 				Err(Error::<T>::FileNonExist)?;
@@ -189,15 +197,15 @@ pub mod pallet {
 			/// - `pfileid`: Unique identification of data.
 			/// - `new_filename`: Name of data.
 			/// - `new_keywords`: Keywords of data
-		#[pallet::weight(1_000_000)]
+		#[pallet::weight(T::WeightInfo::edit())]
 		pub fn edit(origin: OriginFor<T>, pfileid: Vec<u8>, new_filename: Vec<u8>, new_keywords: Vec<Vec<u8>>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
-			let fileid: BoundedVec<u8, T::StringLimit> = pfileid.clone().try_into().expect("fileid too long");
+			let fileid: BoundedVec<u8, T::StringLimit> = pfileid.clone().try_into().map_err(|_| Error::<T>::BadMetadata)?;
 			if !<FileStorage<T>>::contains_key(&who, &fileid) {
 				Err(Error::<T>::FileNonExist)?;
 			}
 
-			let filename: BoundedVec<u8, T::StringLimit> = new_filename.clone().try_into().expect("new filename too long");
+			let filename: BoundedVec<u8, T::StringLimit> = new_filename.clone().try_into().map_err(|_| Error::<T>::BadMetadata)?;
 			let keywords = Self::vec_to_bounde(new_keywords.clone())?;
 
 			<FileStorage<T>>::try_mutate(&who, &fileid, |o_opt| -> DispatchResult {
@@ -219,24 +227,24 @@ pub mod pallet {
 
 impl <T: Config> Pallet<T> {
 	fn vec_to_bounde(param: Vec<Vec<u8>>) -> Result<StringList<T>, DispatchError> {
-		let mut result: StringList<T> = Vec::new().try_into().expect("...");
+		let mut result: StringList<T> = Vec::new().try_into().map_err(|_| Error::<T>::BadMetadata)?;
 
 		for v in param {
-			let string: BoundedVec<u8, T::StringLimit> = v.try_into().expect("keywords too long");
-			result.try_push(string).expect("keywords too long");
+			let string: BoundedVec<u8, T::StringLimit> = v.try_into().map_err(|_| Error::<T>::BadMetadata)?;
+			result.try_push(string).map_err(|_| Error::<T>::UpperLimit)?;
 		}
 
 		Ok(result)
 	}
 	//Storage file
 	fn insert_file(who: &T::AccountId, pfileid: Vec<u8>, pfilename: Vec<u8>, filesize: u128, pkeywords: Vec<Vec<u8>>) -> DispatchResult {
-		let fileid: BoundedVec<u8, T::StringLimit> = pfileid.try_into().expect("fileid too long");
+		let fileid: BoundedVec<u8, T::StringLimit> = pfileid.try_into().map_err(|_| Error::<T>::BadMetadata)?;
 		//Determine that the file you want to change does not currently exist
 		if FileStorage::<T>::contains_key(who, &fileid) {
 			Err(Error::<T>::FileExist)?;
 		}
 
-		let filename: BoundedVec<u8, T::StringLimit> = pfilename.try_into().expect("filename too long");
+		let filename: BoundedVec<u8, T::StringLimit> = pfilename.try_into().map_err(|_| Error::<T>::BadMetadata)?;
 		let keywords = Self::vec_to_bounde(pkeywords)?;
 			
 		let file = FileInfo::<BoundedVec<u8, T::StringLimit>, StringList<T>>::new(filename, filesize, keywords);

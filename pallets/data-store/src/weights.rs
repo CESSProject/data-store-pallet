@@ -25,33 +25,41 @@
 use frame_support::{traits::Get, weights::Weight};
 use sp_std::marker::PhantomData;
 
+pub trait WeightInfo {
+	fn store() -> Weight;
+	fn retrieve() -> Weight;
+	fn replace() -> Weight;
+	fn delete() -> Weight;
+	fn edit() -> Weight;
+}
+
 /// Weight functions for `pallet_data_store`.
-pub struct WeightInfo<T>(PhantomData<T>);
-impl<T: frame_system::Config> pallet_data_store::WeightInfo for WeightInfo<T> {
+pub struct DataStoreWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> WeightInfo for DataStoreWeight<T> {
 	// Storage: DataStore FileStorage (r:1 w:1)
-	fn store(_s: u32, ) -> Weight {
+	fn store() -> Weight {
 		(10_207_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
 	}
 	// Storage: DataStore FileStorage (r:1 w:0)
-	fn retrieve(_s: u32, ) -> Weight {
+	fn retrieve() -> Weight {
 		(9_499_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 	}
 	// Storage: DataStore FileStorage (r:2 w:1)
-	fn replace(_s: u32, ) -> Weight {
+	fn replace() -> Weight {
 		(13_311_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(2 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))
 	}
 	// Storage: DataStore FileStorage (r:1 w:0)
-	fn delete(_s: u32, ) -> Weight {
+	fn delete() -> Weight {
 		(9_343_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 	}
 	// Storage: DataStore FileStorage (r:1 w:1)
-	fn edit(_s: u32, ) -> Weight {
+	fn edit() -> Weight {
 		(12_192_000 as Weight)
 			.saturating_add(T::DbWeight::get().reads(1 as Weight))
 			.saturating_add(T::DbWeight::get().writes(1 as Weight))

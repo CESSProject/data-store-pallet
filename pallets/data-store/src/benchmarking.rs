@@ -1,4 +1,4 @@
-//! Benchmarking setup for pallet-template
+//! Benchmarking setup for data-store-pallet
 
 use super::*;
 
