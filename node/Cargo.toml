@@ -1,5 +1,5 @@
 [package]
-name = "node-template"
+name = "data-store-node"
 version = "4.0.0-dev"
 description = "A fresh FRAME-based Substrate node, ready for hacking."
 authors = ["Substrate DevHub <https://github.com/substrate-developer-hub>"]
@@ -7,7 +7,6 @@ homepage = "https://substrate.io/"
 edition = "2021"
 license = "Unlicense"
 publish = false
-repository = "https://github.com/substrate-developer-hub/substrate-node-template/"
 build = "build.rs"
 
 [package.metadata.docs.rs]
