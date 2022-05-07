@@ -57,6 +57,8 @@ parameter_types! {
 impl pallet_data_store::Config for Test {
 	type Event = Event;
 
+	type WeightInfo = crate::weights::DataStoreWeight<Test>;
+
 	type StringLimit = StringLimit;
 }
 
