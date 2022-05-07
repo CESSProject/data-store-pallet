@@ -43,7 +43,7 @@ Install [Docker](https://docs.docker.com/get-docker/) first, and run the followi
 
 ```
 docker pull cesslab/data-store-pallet:0.1.1
-docker run -itd --name data-store --network=host cesslab/data-store-pallet:0.1.1 && docker logs -f data-store
+docker run -itd --name data-store --network=host cesslab/data-store-pallet:0.1.2 && docker logs -f data-store
 ```
 
 ## Run Tests
