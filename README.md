@@ -42,7 +42,7 @@ Launch node on the dev-env with:
 Install [Docker](https://docs.docker.com/get-docker/) first, and run the following command to start a node:
 
 ```
-docker pull cesslab/data-store-pallet:0.1.1
+docker pull cesslab/data-store-pallet:0.1.2
 docker run -itd --name data-store --network=host cesslab/data-store-pallet:0.1.2 && docker logs -f data-store
 ```
 
